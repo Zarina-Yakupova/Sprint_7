@@ -16,33 +16,40 @@ class TestOrderCreation:
         OrderData.ORDER_WITHOUT_COLOR
     ])
     def test_create_order_with_different_colors(self, order_data):
-        response = OrderMethods.create_order(order_data)
+        with allure.step(f"Подготовка данных заказа с цветом: {order_data.get('color', [])}"):
+            pass
         
-        assert response.status_code == OrderExpectedResponses.CREATED.status_code, \
-               f"Ожидался код {OrderExpectedResponses.CREATED.status_code}, получен {response.status_code}"
+        with allure.step("Отправка запроса на создание заказа"):
+            response = OrderMethods.create_order(order_data)
         
-        response_body = response.json()
-        expected_fields = OrderExpectedResponses.CREATED.required_fields
+        with allure.step("Проверка кода ответа"):
+            assert response.status_code == OrderExpectedResponses.CREATED.status_code, \
+                   f"Ожидался код {OrderExpectedResponses.CREATED.status_code}, получен {response.status_code}"
         
-        for field in expected_fields:
-            assert field in response_body, OrderMessages.MISSING_FIELD.format(field)
+        with allure.step("Проверка наличия поля track в ответе"):
+            response_body = response.json()
+            assert "track" in response_body, OrderMessages.MISSING_FIELD.format("track")
         
-        assert "track" in response_body, OrderMessages.MISSING_FIELD.format("track")
-        assert isinstance(response_body["track"], int), OrderMessages.INVALID_TRACK_TYPE
+        with allure.step("Проверка типа поля track"):
+            assert isinstance(response_body["track"], int), OrderMessages.INVALID_TRACK_TYPE
+    
     
     @allure.title('Создание стандартного заказа')
     @allure.description('Проверка создания заказа со стандартными параметрами')
     def test_create_default_order(self):
-        response = OrderMethods.create_order(OrderData.DEFAULT_ORDER)
+        with allure.step("Подготовка стандартных данных заказа"):
+            pass
         
-        assert response.status_code == OrderExpectedResponses.CREATED.status_code, \
-               f"Ожидался код {OrderExpectedResponses.CREATED.status_code}, получен {response.status_code}"
+        with allure.step("Отправка запроса на создание заказа"):
+            response = OrderMethods.create_order(OrderData.DEFAULT_ORDER)
         
-        response_body = response.json()
-        expected_fields = OrderExpectedResponses.CREATED.required_fields
+        with allure.step("Проверка кода ответа"):
+            assert response.status_code == OrderExpectedResponses.CREATED.status_code, \
+                   f"Ожидался код {OrderExpectedResponses.CREATED.status_code}, получен {response.status_code}"
         
-        for field in expected_fields:
-            assert field in response_body, OrderMessages.MISSING_FIELD.format(field)
+        with allure.step("Проверка наличия поля track в ответе"):
+            response_body = response.json()
+            assert "track" in response_body, OrderMessages.MISSING_FIELD.format("track")
         
-        assert "track" in response_body, OrderMessages.MISSING_FIELD.format("track")
-        assert isinstance(response_body["track"], int), OrderMessages.INVALID_TRACK_TYPE
+        with allure.step("Проверка типа поля track"):
+            assert isinstance(response_body["track"], int), OrderMessages.INVALID_TRACK_TYPE

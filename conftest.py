@@ -18,7 +18,6 @@ def create_and_delete_courier():
             "firstName": first_name
         }
         
-        # Авторизация для получения ID курьера
         auth_payload = {
             "login": login,
             "password": password

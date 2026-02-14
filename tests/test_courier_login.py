@@ -48,15 +48,11 @@ class TestCourierLogin:
         with allure.step("Отправка запроса на авторизацию"):
             response = requests.post(Urls.BASE_URL + Urls.COURIER_LOGIN_URL, data=payload)
         
-        with allure.step("Проверка ответа сервера"):
-            if response.status_code == 504:
-                pytest.skip("Сервер временно недоступен (504 Gateway Timeout)")
-            
-            with allure.step("Проверка кода ответа"):
-                assert response.status_code == 400, f"Ожидался код 400, получен {response.status_code}"
-            
-            with allure.step("Проверка сообщения об ошибке"):
-                assert response.json()["message"] == ErrorMessages.INSUFFICIENT_DATA_FOR_LOGIN
+        with allure.step("Проверка кода ответа (должен быть 400)"):
+            assert response.status_code == 400, f"По документации ожидается код 400, получен {response.status_code}"
+
+        with allure.step("Проверка сообщения об ошибке"):
+            assert response.json()["message"] == ErrorMessages.INSUFFICIENT_DATA_FOR_LOGIN
     
 
     @allure.title('Авторизация без поля "password"')
@@ -72,15 +68,11 @@ class TestCourierLogin:
         with allure.step("Отправка запроса на авторизацию"):
             response = requests.post(Urls.BASE_URL + Urls.COURIER_LOGIN_URL, data=payload)
         
-        with allure.step("Проверка ответа сервера"):
-            if response.status_code == 504:
-                pytest.skip("Сервер временно недоступен (504 Gateway Timeout)")
-            
-            with allure.step("Проверка кода ответа"):
-                assert response.status_code == 400, f"Ожидался код 400, получен {response.status_code}"
-            
-            with allure.step("Проверка сообщения об ошибке"):
-                assert response.json()["message"] == ErrorMessages.INSUFFICIENT_DATA_FOR_LOGIN
+        with allure.step("Проверка кода ответа (должен быть 400)"):
+            assert response.status_code == 400, f"По документации ожидается код 400, получен {response.status_code}"
+
+        with allure.step("Проверка сообщения об ошибке"):
+            assert response.json()["message"] == ErrorMessages.INSUFFICIENT_DATA_FOR_LOGIN
     
 
     @allure.title('Авторизация с пустым телом запроса')
@@ -90,15 +82,11 @@ class TestCourierLogin:
             response = requests.post(Urls.BASE_URL + Urls.COURIER_LOGIN_URL,
                                     data=CourierData.EMPTY_BODY)
         
-        with allure.step("Проверка ответа сервера"):
-            if response.status_code == 504:
-                pytest.skip("Сервер временно недоступен (504 Gateway Timeout)")
-            
-            with allure.step("Проверка кода ответа"):
-                assert response.status_code == 400, f"Ожидался код 400, получен {response.status_code}"
-            
-            with allure.step("Проверка сообщения об ошибке"):
-                assert response.json()["message"] == ErrorMessages.INSUFFICIENT_DATA_FOR_LOGIN
+        with allure.step("Проверка кода ответа (должен быть 400)"):
+            assert response.status_code == 400, f"По документации ожидается код 400, получен {response.status_code}"
+
+        with allure.step("Проверка сообщения об ошибке"):
+            assert response.json()["message"] == ErrorMessages.INSUFFICIENT_DATA_FOR_LOGIN
     
 
     @allure.title('Авторизация с неверным логином')
@@ -116,15 +104,11 @@ class TestCourierLogin:
         with allure.step("Отправка запроса на авторизацию"):
             response = requests.post(Urls.BASE_URL + Urls.COURIER_LOGIN_URL, data=payload)
         
-        with allure.step("Проверка ответа сервера"):
-            if response.status_code == 504:
-                pytest.skip("Сервер временно недоступен (504 Gateway Timeout)")
-            
-            with allure.step("Проверка кода ответа"):
-                assert response.status_code == 404, f"Ожидался код 404, получен {response.status_code}"
-            
-            with allure.step("Проверка сообщения об ошибке"):
-                assert response.json()["message"] == ErrorMessages.ACCOUNT_NOT_FOUND
+        with allure.step("Проверка кода ответа (должен быть 404)"):
+            assert response.status_code == 404, f"По документации ожидается код 404, получен {response.status_code}"
+
+        with allure.step("Проверка сообщения об ошибке"):
+            assert response.json()["message"] == ErrorMessages.ACCOUNT_NOT_FOUND
     
 
     @allure.title('Авторизация с неверным паролем')
@@ -142,15 +126,11 @@ class TestCourierLogin:
         with allure.step("Отправка запроса на авторизацию"):
             response = requests.post(Urls.BASE_URL + Urls.COURIER_LOGIN_URL, data=payload)
         
-        with allure.step("Проверка ответа сервера"):
-            if response.status_code == 504:
-                pytest.skip("Сервер временно недоступен (504 Gateway Timeout)")
-            
-            with allure.step("Проверка кода ответа"):
-                assert response.status_code == 404, f"Ожидался код 404, получен {response.status_code}"
-            
-            with allure.step("Проверка сообщения об ошибке"):
-                assert response.json()["message"] == ErrorMessages.ACCOUNT_NOT_FOUND
+        with allure.step("Проверка кода ответа (должен быть 404)"):
+            assert response.status_code == 404, f"По документации ожидается код 404, получен {response.status_code}"
+
+        with allure.step("Проверка сообщения об ошибке"):
+            assert response.json()["message"] == ErrorMessages.ACCOUNT_NOT_FOUND
     
     
     @allure.title('Авторизация несуществующего пользователя')
@@ -160,12 +140,8 @@ class TestCourierLogin:
             response = requests.post(Urls.BASE_URL + Urls.COURIER_LOGIN_URL, 
                                     data=CourierData.INVALID_CREDENTIALS)
         
-        with allure.step("Проверка ответа сервера"):
-            if response.status_code == 504:
-                pytest.skip("Сервер временно недоступен (504 Gateway Timeout)")
-            
-            with allure.step("Проверка кода ответа"):
-                assert response.status_code == 404, f"Ожидался код 404, получен {response.status_code}"
-            
-            with allure.step("Проверка сообщения об ошибке"):
-                assert response.json()["message"] == ErrorMessages.ACCOUNT_NOT_FOUND
+        with allure.step("Проверка кода ответа (должен быть 404)"):
+            assert response.status_code == 404, f"По документации ожидается код 404, получен {response.status_code}"
+
+        with allure.step("Проверка сообщения об ошибке"):
+            assert response.json()["message"] == ErrorMessages.ACCOUNT_NOT_FOUND

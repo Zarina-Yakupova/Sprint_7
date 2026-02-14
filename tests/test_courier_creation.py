@@ -1,7 +1,7 @@
 import allure
 import requests
 from urls import Urls
-from data import CourierData
+from data import CourierData, ErrorMessages
 from helpers import CourierMethods
 
 
@@ -22,7 +22,6 @@ class TestCourierCreation:
         }
         
         response = requests.post(Urls.BASE_URL + Urls.COURIER_CREATE_URL, data=payload)
-        
         assert response.status_code == 201, f"Ожидался код 201, получен {response.status_code}"
         
         response_body = response.json()
@@ -43,7 +42,7 @@ class TestCourierCreation:
             response = requests.post(Urls.BASE_URL + Urls.COURIER_CREATE_URL, data=payload)
             
             assert response.status_code == 409, f"Ожидался код 409, получен {response.status_code}"
-            assert response.json()["message"] == "Этот логин уже используется. Попробуйте другой."
+            assert response.json()["message"] == ErrorMessages.COURIER_ALREADY_EXISTS
     
 
     @allure.title('Создание курьера без обязательного поля "login"')
@@ -53,7 +52,7 @@ class TestCourierCreation:
                                 data=CourierData.COURIER_WITHOUT_LOGIN)
         
         assert response.status_code == 400, f"Ожидался код 400, получен {response.status_code}"
-        assert response.json()["message"] == "Недостаточно данных для создания учетной записи"
+        assert response.json()["message"] == ErrorMessages.INSUFFICIENT_DATA
     
 
     @allure.title('Создание курьера без обязательного поля "password"')
@@ -63,12 +62,13 @@ class TestCourierCreation:
                                 data=CourierData.COURIER_WITHOUT_PASSWORD)
         
         assert response.status_code == 400, f"Ожидался код 400, получен {response.status_code}"
-        assert response.json()["message"] == "Недостаточно данных для создания учетной записи"
-
+        assert response.json()["message"] == ErrorMessages.INSUFFICIENT_DATA
+    
 
     @allure.title('Создание курьера без обязательного поля "firstName"')
     @allure.description('Проверка, что можно создать курьера без имени')
     def test_create_courier_without_first_name_success(self):
+    
         login = CourierMethods.generate_random_string(10)
         password = CourierMethods.generate_random_string(10)
         
@@ -78,7 +78,6 @@ class TestCourierCreation:
         }
         
         response = requests.post(Urls.BASE_URL + Urls.COURIER_CREATE_URL, data=payload)
-        
         assert response.status_code == 201, f"Ожидался код 201, получен {response.status_code}"
         
         response_body = response.json()
@@ -93,7 +92,7 @@ class TestCourierCreation:
                                 data=CourierData.EMPTY_BODY)
         
         assert response.status_code == 400, f"Ожидался код 400, получен {response.status_code}"
-        assert response.json()["message"] == "Недостаточно данных для создания учетной записи"
+        assert response.json()["message"] == ErrorMessages.INSUFFICIENT_DATA
     
 
     @allure.title('Успешный запрос возвращает ok:true')
@@ -110,6 +109,5 @@ class TestCourierCreation:
         }
         
         response = requests.post(Urls.BASE_URL + Urls.COURIER_CREATE_URL, data=payload)
-        
-        assert response.status_code == 201
-        assert response.json()["ok"] == True
+        assert response.status_code == 201, f"Ожидался код 201, получен {response.status_code}"
+        assert response.json()["ok"] == True, "Поле ok должно быть true"
